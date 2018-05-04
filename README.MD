@@ -1,8 +1,9 @@
 # auto-pet-feeder
-Feeds your pets.
+Keep your pets happy.
 
 ## Info
 - You must have Pet Treats or Pet Food in your inventory.
+- Auto-feed triggers when pet has 5 remaining energy or less.
 
 ## Usage
 ### `autopetfeeder`
