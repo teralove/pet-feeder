@@ -7,7 +7,7 @@ Updated by TerableCoder
 
 ## Info
 - You must have Pet Treats or Pet Food in your inventory.
-- Auto-feed triggers when pet has 5 remaining energy or less.
+- Auto-feed triggers when pet has 10 remaining energy or less.
 
 ## Usage
 ### `autopetfeeder`
