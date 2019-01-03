@@ -1,7 +1,7 @@
 module.exports = function AutoPetFeeder(dispatch) {
 	const command = dispatch.command || dispatch.require.command;
     const SendNotifications = false; // Send notifications when items are consumed
-    const MinimumEnergy = 5; // How much remaining energy the pet needs to trigger feed
+    const MinimumEnergy = 10; // How much remaining energy the pet needs to trigger feed, you can't use pet functions below 10
     
     let enabled = true,
 		gameId,
