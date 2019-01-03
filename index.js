@@ -92,7 +92,7 @@ module.exports = function AutoPetFeeder(dispatch) {
     
     command.add(['autopetfeeder'], () => {
         enabled = !enabled;
-        command.message('(auto-pet-feeder) ' + (enabled) ? 'enabled' : 'disabled');
+        command.message(`(auto-pet-feeder) ${enabled ? 'en' : 'dis'}abled.`);
     });
     
     command.add('feedpet', () => {
