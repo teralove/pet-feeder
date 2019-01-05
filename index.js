@@ -1,35 +1,33 @@
-const Command = require('command');
-
 module.exports = function AutoPetFeeder(dispatch) {
-    const command = Command(dispatch);
+	const command = dispatch.command || dispatch.require.command;
     const SendNotifications = false; // Send notifications when items are consumed
-    const MinimumEnergy = 5; // How much remaining energy the pet needs to trigger feed
+    const MinimumEnergy = 10; // How much remaining energy the pet needs to trigger feed, you can't use pet functions below 10
     
     let enabled = true,
-    gameId,
-    playerLocation, 
-    onCd = false;
+		gameId,
+		playerLocation, 
+		onCd = false;
     
     let feedList = [
-    {
-        name: 'Pet Treat', // Common item. Restores 30 energy
-        id: 167133,
-        invQtd: 0,
-        dbid: 0,
-    }, 
-    {
-        name: 'Pet Food', // Uncommon item. Restores 100 energy
-        id: 167134,
-        invQtd: 0,
-        dbid: 0,
-    }
+		{
+			name: 'Pet Treat', // Common item. Restores 30 energy
+			id: 167133,
+			invQtd: 0,
+			dbid: 0,
+		}, 
+		{
+			name: 'Pet Food', // Uncommon item. Restores 100 energy
+			id: 167134,
+			invQtd: 0,
+			dbid: 0,
+		}
     ];
-        
-    dispatch.hook('S_LOGIN', 10, (event) => { gameId = event.gameId; });
+	
+    dispatch.hook('S_LOGIN', 12, (event) => { gameId = event.gameId; });
     
     dispatch.hook('C_PLAYER_LOCATION', 5, (event) => { playerLocation = event.loc; });
     
-    dispatch.hook('S_INVEN', 12, { order: -10 }, (event) => {
+    dispatch.hook('S_INVEN', 16, { order: -10 }, (event) => {
         if (!enabled) return;
 
         let tempInv = event.items;
@@ -44,7 +42,7 @@ module.exports = function AutoPetFeeder(dispatch) {
     });
         
     dispatch.hook('S_SPAWN_SERVANT', 2, (event) => {
-        if (gameId.equals(event.owner)) {
+        if (gameId == event.owner) {
             if (enabled && event.energy < MinimumEnergy) {
                 feedPet();
             }
@@ -94,7 +92,7 @@ module.exports = function AutoPetFeeder(dispatch) {
     
     command.add(['autopetfeeder'], () => {
         enabled = !enabled;
-        command.message('(auto-pet-feeder) ' + (enabled) ? 'enabled' : 'disabled');
+        command.message(`(auto-pet-feeder) ${enabled ? 'en' : 'dis'}abled.`);
     });
     
     command.add('feedpet', () => {
