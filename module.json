@@ -1,5 +1,5 @@
 {
-    "disableAutoUpdate": true,
+    "disableAutoUpdate": false,
 	"name": "pet-feeder",
 	"author": "teralove",
 	"description": "Auto feed your pets.",
