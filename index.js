@@ -1,11 +1,6 @@
-module.exports = function AutoPetFeeder(dispatch) {
-	const command = dispatch.command || dispatch.require.command;
-    const SendNotifications = false; // Send notifications when items are consumed
-    const MinimumEnergy = 10; // How much remaining energy the pet needs to trigger feed, you can't use pet functions below 10
-    
-    let enabled = true,
-		gameId,
-		playerLocation, 
+module.exports = function PetFeeder(mod) {
+
+    let	playerLocation, 
 		onCd = false;
     
     let feedList = [
@@ -22,13 +17,11 @@ module.exports = function AutoPetFeeder(dispatch) {
 			dbid: 0,
 		}
     ];
-	
-    dispatch.hook('S_LOGIN', 12, (event) => { gameId = event.gameId; });
+
+    mod.hook('C_PLAYER_LOCATION', 5, (event) => { playerLocation = event.loc; });
     
-    dispatch.hook('C_PLAYER_LOCATION', 5, (event) => { playerLocation = event.loc; });
-    
-    dispatch.hook('S_INVEN', 16, { order: -10 }, (event) => {
-        if (!enabled) return;
+    mod.hook('S_INVEN', 18, { order: -10 }, (event) => {
+        if (!mod.settings.enabled) return;
 
         let tempInv = event.items;
         for (let i = 0; i < tempInv.length; i++) {
@@ -41,21 +34,19 @@ module.exports = function AutoPetFeeder(dispatch) {
         }
     });
         
-    dispatch.hook('S_SPAWN_SERVANT', 2, (event) => {
-        if (gameId == event.owner) {
-            if (enabled && event.energy < MinimumEnergy) {
+    mod.hook('S_SPAWN_SERVANT', 2, (event) => {
+        if (mod.game.me.gameId == event.owner) {
+            if (mod.settings.enabled && event.energy < mod.settings.minimumEnergy) {
                 feedPet();
             }
         }
     });
     
-    dispatch.hook('S_CHANGE_SERVANT_ENERGY', 1, (event) => {
-        if (enabled && event.energy < MinimumEnergy) {
+    mod.hook('S_CHANGE_SERVANT_ENERGY', 1, (event) => {
+        if (mod.settings.enabled && event.energy < mod.settings.minimumEnergy) {
             feedPet();
         }
     });
-
-
     
     function feedPet() {
         for (let i = 0; i < feedList.length; i++) {
@@ -64,18 +55,18 @@ module.exports = function AutoPetFeeder(dispatch) {
                 feedList[i].invQtd--;
                 onCd = true;
                 setTimeout(()=>{ onCd = false; }, 3000);
-                if (SendNotifications) command.message('(auto-pet-feeder) Used ' + feedList[i].name + ', ' + feedList[i].invQtd + ' remaining.');
+                if (mod.settings.sendNotifications) mod.command.message('(pet-feeder) Used ' + feedList[i].name + ', ' + feedList[i].invQtd + ' remaining.');
                 return;
             }
         }
         
         // warning. no food in inventory
-        command.message('(auto-pet-feeder) No pet food in inventory to feed pet');
+        mod.command.message('(pet-feeder) No pet food in inventory to feed pet');
     }
     
     function useItem(foodInfo) {
-        dispatch.toServer('C_USE_ITEM', 3, {
-            gameId: gameId,
+        mod.toServer('C_USE_ITEM', 3, {
+            gameId: mod.game.me.gameId,
             id: foodInfo.id,
             dbid: foodInfo.dbid,
             target: 0,
@@ -90,12 +81,21 @@ module.exports = function AutoPetFeeder(dispatch) {
         });
     }
     
-    command.add(['autopetfeeder'], () => {
-        enabled = !enabled;
-        command.message(`(auto-pet-feeder) ${enabled ? 'en' : 'dis'}abled.`);
+    mod.command.add(['autopetfeeder', 'petfeeder'], (arg) => {
+        if (arg) arg = arg.toLowerCase();
+        
+        if (arg == undefined) {
+            config.enabled = !config.enabled;
+        } else if (['enable', 'on'].includes(arg)) {
+            config.enabled = true;
+        } else if (['disable', 'off'].includes(arg)) {
+            config.enabled = false;
+        }
+
+        mod.command.message(`(pet-feeder) ${config.enabled ? 'Enabled' : 'Disabled'}`);
     });
     
-    command.add('feedpet', () => {
+    mod.command.add('feedpet', () => {
         feedPet();
     });
 
