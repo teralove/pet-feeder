@@ -1,27 +1,27 @@
 module.exports = function PetFeeder(mod) {
 
     let	playerLocation, 
-		onCd = false;
+    onCd = false;
     
     let feedList = [
-		{
-			name: 'Pet Treat', // Common item. Restores 30 energy
-			id: 167133,
-			invQtd: 0,
-			dbid: 0,
-		}, 
-		{
-			name: 'Pet Treat', // Common item. Restores 30 energy
-			id: 177131,
-			invQtd: 0,
-			dbid: 0,
-		}, 
-		{
-			name: 'Pet Food', // Uncommon item. Restores 100 energy
-			id: 167134,
-			invQtd: 0,
-			dbid: 0,
-		}
+    {
+        name: 'Pet Treat', // Common item. Restores 30 energy
+        id: 167133,
+        invQtd: 0,
+        dbid: 0,
+    }, 
+    {
+        name: 'Pet Treat', // Common item. Restores 30 energy
+        id: 177131,
+        invQtd: 0,
+        dbid: 0,
+    }, 
+    {
+        name: 'Pet Food', // Uncommon item. Restores 100 energy
+        id: 167134,
+        invQtd: 0,
+        dbid: 0,
+    }
     ];
 
     mod.hook('C_PLAYER_LOCATION', 5, (event) => { playerLocation = event.loc; });
@@ -61,13 +61,13 @@ module.exports = function PetFeeder(mod) {
                 feedList[i].invQtd--;
                 onCd = true;
                 setTimeout(()=>{ onCd = false; }, 3000);
-                if (mod.settings.sendNotifications) mod.command.message('(pet-feeder) Used ' + feedList[i].name + ', ' + feedList[i].invQtd + ' remaining.');
+                if (mod.settings.sendNotifications) mod.message('Used ' + feedList[i].name + ', ' + feedList[i].invQtd + ' remaining.');
                 return;
             }
         }
         
         // warning. no food in inventory
-        mod.command.message('(pet-feeder) No pet food in inventory to feed pet');
+        mod.message('No pet food in inventory to feed pet');
     }
     
     function useItem(foodInfo) {
@@ -98,7 +98,7 @@ module.exports = function PetFeeder(mod) {
             config.enabled = false;
         }
 
-        mod.command.message(`(pet-feeder) ${config.enabled ? 'Enabled' : 'Disabled'}`);
+        mod.message(`${config.enabled ? 'Enabled' : 'Disabled'}`);
     });
     
     mod.command.add('feedpet', () => {
