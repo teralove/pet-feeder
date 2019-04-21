@@ -11,6 +11,12 @@ module.exports = function PetFeeder(mod) {
 			dbid: 0,
 		}, 
 		{
+			name: 'Pet Treat', // Common item. Restores 30 energy
+			id: 177131,
+			invQtd: 0,
+			dbid: 0,
+		}, 
+		{
 			name: 'Pet Food', // Uncommon item. Restores 100 energy
 			id: 167134,
 			invQtd: 0,
