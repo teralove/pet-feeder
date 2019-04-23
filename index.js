@@ -61,13 +61,13 @@ module.exports = function PetFeeder(mod) {
                 feedList[i].invQtd--;
                 onCd = true;
                 setTimeout(()=>{ onCd = false; }, 3000);
-                if (mod.settings.sendNotifications) mod.message('Used ' + feedList[i].name + ', ' + feedList[i].invQtd + ' remaining.');
+                if (mod.settings.sendNotifications) mod.command.message('Used ' + feedList[i].name + ', ' + feedList[i].invQtd + ' remaining.');
                 return;
             }
         }
         
         // warning. no food in inventory
-        mod.message('No pet food in inventory to feed pet');
+        mod.command.message('No pet food in inventory to feed pet');
     }
     
     function useItem(foodInfo) {
@@ -98,7 +98,7 @@ module.exports = function PetFeeder(mod) {
             config.enabled = false;
         }
 
-        mod.message(`${config.enabled ? 'Enabled' : 'Disabled'}`);
+        mod.command.message(`${config.enabled ? 'Enabled' : 'Disabled'}`);
     });
     
     mod.command.add('feedpet', () => {
